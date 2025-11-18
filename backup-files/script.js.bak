@@ -1,0 +1,520 @@
+// Particle Background Animation// Animation on scroll// Rain animation// Create and manage rain effect// === Tab Switching ===
+
+class Particle {
+
+    constructor(container) {function initScrollAnimations() {
+
+        this.container = container;
+
+        this.element = document.createElement('div');    const cards = document.querySelectorAll('.theme-card');function createRaindrops() {
+
+        this.element.className = 'particle';
+
+        this.size = Math.random() * 3 + 1;    const observer = new IntersectionObserver((entries) => {
+
+        this.x = Math.random() * 100;
+
+        this.y = Math.random() * 100;        entries.forEach(entry => {    const rain = document.getElementById('rain');function createRain() {function showTab(id) {
+
+        this.speedX = (Math.random() - 0.5) * 0.3;
+
+        this.speedY = (Math.random() - 0.5) * 0.3;            if (entry.isIntersecting) {
+
+        this.opacity = Math.random() * 0.5 + 0.2;
+
+                entry.target.style.opacity = '1';    if (!rain) return;
+
+        this.element.style.cssText = `
+
+            width: ${this.size}px;                entry.target.style.transform = 'translateY(0)';
+
+            height: ${this.size}px;
+
+            left: ${this.x}%;            }  const container = document.getElementById('rain');  document.querySelectorAll('main section').forEach(s => s.classList.add('d-none'));
+
+            top: ${this.y}%;
+
+            opacity: ${this.opacity};        });
+
+        `;
+
+    }, {    // Clear existing drops
+
+        this.container.appendChild(this.element);
+
+    }        threshold: 0.1
+
+
+
+    move() {    });    rain.innerHTML = '';  if (!container) return;  document.getElementById(id).classList.remove('d-none');
+
+        this.x += this.speedX;
+
+        this.y += this.speedY;
+
+
+
+        // Bounce off edges    cards.forEach((card, index) => {
+
+        if (this.x <= 0 || this.x >= 100) this.speedX *= -1;
+
+        if (this.y <= 0 || this.y >= 100) this.speedY *= -1;        card.style.opacity = '0';
+
+
+
+        this.element.style.left = `${this.x}%`;        card.style.transform = 'translateY(20px)';    // Create new drops  
+
+        this.element.style.top = `${this.y}%`;
+
+    }        card.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+
+}
+
+        card.style.transitionDelay = `${index * 0.1}s`;    const numberOfDrops = window.innerWidth < 768 ? 30 : 50;
+
+class ParticleLine {
+
+    constructor(container, particle1, particle2) {        observer.observe(card);
+
+        this.container = container;
+
+        this.element = document.createElement('div');    });      // Clear existing drops  document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+
+        this.element.className = 'particle-line';
+
+        this.particle1 = particle1;}
+
+        this.particle2 = particle2;
+
+        this.container.appendChild(this.element);    for (let i = 0; i < numberOfDrops; i++) {
+
+    }
+
+// Button hover effect
+
+    update() {
+
+        const x1 = this.particle1.x;function initButtonEffects() {        const drop = document.createElement('div');  container.innerHTML = '';  const activeLink = Array.from(document.querySelectorAll('.nav-link')).find(link =>
+
+        const y1 = this.particle1.y;
+
+        const x2 = this.particle2.x;    const buttons = document.querySelectorAll('.btn');
+
+        const y2 = this.particle2.y;
+
+    buttons.forEach(btn => {        drop.className = 'drop';
+
+        const distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+
+        if (distance > 20) {        btn.addEventListener('mousemove', (e) => {
+
+            this.element.style.opacity = '0';
+
+            return;            const rect = btn.getBoundingClientRect();              link.textContent.toLowerCase().includes(id.replace('Tab', '').toLowerCase())
+
+        }
+
+            const x = e.clientX - rect.left;
+
+        const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+
+        this.element.style.cssText = `            const y = e.clientY - rect.top;        // Randomize starting position
+
+            width: ${distance}%;
+
+            left: ${x1}%;            
+
+            top: ${y1}%;
+
+            transform: rotate(${angle}deg);            btn.style.setProperty('--x', `${x}px`);        drop.style.left = Math.random() * 100 + '%';  // Create more drops for a denser effect  );
+
+            transform-origin: left center;
+
+            opacity: ${0.2 * (1 - distance / 20)};            btn.style.setProperty('--y', `${y}px`);
+
+        `;
+
+    }        });        
+
+}
+
+    });
+
+// Initialize particle system
+
+function initParticles() {}        // Randomize animation duration  const dropCount = window.innerWidth < 768 ? 50 : 100;  if (activeLink) activeLink.classList.add('active');
+
+    const container = document.getElementById('particles-bg');
+
+    if (!container) return;
+
+
+
+    const particles = [];// Smooth section transitions        const duration = 0.8 + Math.random() * 0.7;
+
+    const lines = [];
+
+    const numParticles = window.innerWidth < 768 ? 15 : 25;function initSmoothTransitions() {
+
+
+
+    // Create particles    const sections = document.querySelectorAll('main section');        drop.style.animationDuration = duration + 's';  }
+
+    for (let i = 0; i < numParticles; i++) {
+
+        particles.push(new Particle(container));    sections.forEach(section => {
+
+    }
+
+        section.style.transition = 'opacity 0.3s ease, transform 0.3s ease';        
+
+    // Create lines between nearby particles
+
+    for (let i = 0; i < particles.length; i++) {    });
+
+        for (let j = i + 1; j < particles.length; j++) {
+
+            lines.push(new ParticleLine(container, particles[i], particles[j]));}        // Randomize animation delay  for (let i = 0; i < dropCount; i++) {
+
+        }
+
+    }
+
+
+
+    // Animation loop// Enhanced tab switching with animations        drop.style.animationDelay = Math.random() * -20 + 's';
+
+    function animate() {
+
+        particles.forEach(particle => particle.move());function showTab(id) {
+
+        lines.forEach(line => line.update());
+
+        requestAnimationFrame(animate);    const sections = document.querySelectorAll('main section');            const drop = document.createElement('div');// === Dark / Light Mode Toggle ===
+
+    }
+
+    const targetSection = document.getElementById(id);
+
+    animate();
+
+            rain.appendChild(drop);
+
+    // Handle window resize
+
+    window.addEventListener('resize', () => {    sections.forEach(s => {
+
+        // Clear existing particles
+
+        container.innerHTML = '';        if (s === targetSection) {    }    drop.className = 'drop';function toggleTheme() {
+
+        
+
+        // Reinitialize with new count            s.classList.add('active');
+
+        particles.length = 0;
+
+        lines.length = 0;            s.style.opacity = '0';}
+
+        initParticles();
+
+    });            s.style.transform = 'translateY(20px)';
+
+}
+
+            setTimeout(() => {      const body = document.body;
+
+// Tab switching with animation
+
+function showTab(id) {                s.style.opacity = '1';
+
+    document.querySelectorAll('main section').forEach(s => {
+
+        if (s.id === id) {                s.style.transform = 'translateY(0)';// Initialize rain effect
+
+            s.style.opacity = '0';
+
+            s.classList.add('active');            }, 50);
+
+            setTimeout(() => s.style.opacity = '1', 50);
+
+        } else {        } else {function initRain() {    // Random position and timing  body.classList.toggle("dark");
+
+            s.classList.remove('active');
+
+        }            s.classList.remove('active');
+
+    });
+
+        }    createRaindrops();
+
+    document.querySelectorAll('.nav-link').forEach(link => {
+
+        link.classList.remove('active');    });
+
+    });
+
+            drop.style.left = Math.random() * 100 + '%';  const isDark = body.classList.contains("dark");
+
+    const activeLink = Array.from(document.querySelectorAll('.nav-link')).find(link =>
+
+        link.textContent.toLowerCase().includes(id.replace('Tab','').toLowerCase())    // Update navigation
+
+    );
+
+    if (activeLink) activeLink.classList.add('active');    document.querySelectorAll('.nav-link').forEach(link => {    // Recreate raindrops on window resize
+
+
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });        link.classList.remove('active');
+
+}
+
+        const activeLink = Array.from(document.querySelectorAll('.nav-link')).find(link =>    let resizeTimeout;    drop.style.animationDelay = (Math.random() * -20) + 's';
+
+// Theme toggle with particle color update
+
+function toggleTheme() {            link.textContent.toLowerCase().includes(id.replace('Tab','').toLowerCase())
+
+    const body = document.body;
+
+    body.classList.toggle("light");        );    window.addEventListener('resize', () => {
+
+    const isLight = body.classList.contains("light");
+
+        if(activeLink) {
+
+    // Update nav links
+
+    document.querySelectorAll('.nav-link').forEach(link => {            activeLink.classList.add('active');        clearTimeout(resizeTimeout);    drop.style.animationDuration = (0.5 + Math.random() * 1.5) + 's';  const icon = document.getElementById("themeIcon");
+
+        link.style.color = isLight ? "var(--text-light)" : "var(--text-dark)";
+
+    });            activeLink.style.transform = 'scale(0.95)';
+
+
+
+    // Update theme icons            setTimeout(() => {        resizeTimeout = setTimeout(createRaindrops, 100);
+
+    const iconLg = document.getElementById("themeIcon-lg");
+
+    iconLg.className = isLight ? "fa-solid fa-moon" : "fa-solid fa-sun";                activeLink.style.transform = 'scale(1)';
+
+    iconLg.style.color = isLight ? "var(--neon-blue)" : "var(--neon-cyan)";
+
+            }, 150);    });      const text = document.getElementById("themeText");
+
+    const icon = document.getElementById("themeIcon");
+
+    const text = document.getElementById("themeText");        }
+
+    if(icon && text) {
+
+        icon.className = isLight ? "fa-solid fa-moon" : "fa-solid fa-sun";    });}
+
+        text.textContent = isLight ? "Dark Mode" : "Light Mode";
+
+    }
+
+}
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });    container.appendChild(drop);  const iconLg = document.getElementById("themeIcon-lg");
+
+// Initialize everything when the page loads
+
+document.addEventListener('DOMContentLoaded', () => {}
+
+    initParticles();
+
+    showTab('videosTab');// Start rain effect when page loads
+
+});
+// Enhanced theme toggle with transition
+
+function toggleTheme() {window.addEventListener('DOMContentLoaded', initRain);  }  const textLg = document.getElementById("themeText-lg");
+
+    const body = document.body;
+
+    const isLight = body.classList.contains('light');
+
+    
+
+    // Prepare for transition// Also preserve the existing functionality}
+
+    document.documentElement.style.setProperty('--transition-normal', '0.5s ease');
+
+    function showTab(id) {
+
+    if (isLight) {
+
+        body.classList.remove('light');    document.querySelectorAll('main section').forEach(s => s.classList.remove('active'));  const iconClass = isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
+
+    } else {
+
+        body.classList.add('light');    document.getElementById(id).classList.add('active');
+
+    }
+
+// Initialize rain effect  const textContent = isDark ? "Light Mode" : "Dark Mode";
+
+    // Update nav links with animation
+
+    document.querySelectorAll('.nav-link').forEach(link => {    document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+
+        link.style.transition = 'all 0.5s ease';
+
+        link.style.color = isLight ? "var(--text-dark)" : "var(--text-light)";    const activeLink = Array.from(document.querySelectorAll('.nav-link')).find(link =>function initRain() {
+
+    });
+
+        link.textContent.toLowerCase().includes(id.replace('Tab','').toLowerCase())
+
+    // Animate icons
+
+    const iconLg = document.getElementById("themeIcon-lg");    );  createRain();  icon.className = iconLg.className = iconClass;
+
+    const icon = document.getElementById("themeIcon");
+
+    const text = document.getElementById("themeText");    if(activeLink) activeLink.classList.add('active');
+
+
+
+    if (iconLg) {  // Recreate on resize for responsive behavior  text.textContent = textLg.textContent = textContent;
+
+        iconLg.style.transform = 'rotate(180deg)';
+
+        setTimeout(() => {    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            iconLg.className = isLight ? "fa-solid fa-sun" : "fa-solid fa-moon";
+
+            iconLg.style.color = isLight ? "var(--neon-cyan)" : "var(--neon-blue)";}  window.addEventListener('resize', () => {}
+
+            iconLg.style.transform = 'rotate(0deg)';
+
+        }, 150);
+
+    }
+
+function toggleTheme() {    clearTimeout(window.rainTimeout);
+
+    if (icon && text) {
+
+        icon.className = isLight ? "fa-solid fa-sun" : "fa-solid fa-moon";    const body = document.body;
+
+        text.textContent = isLight ? "Light Mode" : "Dark Mode";
+
+    }    body.classList.toggle("light");    window.rainTimeout = setTimeout(createRain, 200);// === Smooth scroll to top when switching tabs ===
+
+
+
+    // Animate cards    const isLight = body.classList.contains("light");
+
+    document.querySelectorAll('.theme-card').forEach((card, index) => {
+
+        card.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';  });document.querySelectorAll('.nav-link').forEach(link => {
+
+        card.style.transitionDelay = `${index * 0.05}s`;
+
+    });    // Update nav links color dynamically
+
+}
+
+    document.querySelectorAll('.nav-link').forEach(link => {}  link.addEventListener('click', () => {
+
+// Initialize all animations
+
+document.addEventListener('DOMContentLoaded', () => {        link.style.color = isLight ? "var(--text-light)" : "var(--text-dark)";
+
+    initScrollAnimations();
+
+    initButtonEffects();    });    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    initSmoothTransitions();
+
+    showTab('videosTab');
+
+});
+    // Large icon toggle// Start when page loads  });
+
+    const iconLg = document.getElementById("themeIcon-lg");
+
+    iconLg.className = isLight ? "fa-solid fa-moon" : "fa-solid fa-sun";document.addEventListener('DOMContentLoaded', initRain);});
+
+    iconLg.style.color = isLight ? "var(--neon-blue)" : "var(--neon-cyan)";
+
+// === Initialize page in dark mode by default ===
+
+    // Small mobile togglewindow.addEventListener('DOMContentLoaded', () => {
+
+    const icon = document.getElementById("themeIcon");  document.body.classList.add('dark');
+
+    const text = document.getElementById("themeText");  // Update toggle icons/text on load
+
+    if(icon && text){  toggleTheme();
+
+        icon.className = isLight ? "fa-solid fa-moon" : "fa-solid fa-sun";  // Start rain background
+
+        text.textContent = isLight ? "Dark Mode" : "Light Mode";  initRain();
+
+    }});
+
+}
+/* ===== Rain background =====
+   Generates absolutely-positioned `.drop` elements inside #rain and
+   animates them using CSS keyframes defined in `index.html`.
+*/
+function clearRain() {
+  const container = document.getElementById('rain');
+  if (!container) return;
+  while (container.firstChild) container.removeChild(container.firstChild);
+}
+
+function createRain(count) {
+  const container = document.getElementById('rain');
+  if (!container) return;
+  const docW = window.innerWidth;
+  for (let i = 0; i < count; i++) {
+    const d = document.createElement('div');
+    d.className = 'drop';
+
+    // Random horizontal position
+    const left = Math.random() * 100; // percent
+    d.style.left = left + '%';
+
+    // Random duration and delay for variety
+    const duration = 0.8 + Math.random() * 2.2; // seconds
+    const delay = Math.random() * -5; // negative delay to stagger on load
+    d.style.animationDuration = duration + 's';
+    d.style.animationDelay = delay + 's';
+
+    // Random height/opacity
+    const height = 20 + Math.random() * 80;
+    d.style.height = height + 'px';
+    d.style.opacity = (0.15 + Math.random() * 0.7).toFixed(2);
+
+    // Slight chance of big drop
+    if (Math.random() > 0.85) d.classList.add('drop--big');
+
+    container.appendChild(d);
+  }
+}
+
+function initRain() {
+  const container = document.getElementById('rain');
+  if (!container) return;
+  // Choose density based on viewport width
+  const isMobile = window.innerWidth < 768;
+  const count = isMobile ? 25 : 60;
+
+  clearRain();
+  createRain(count);
+
+  // Regenerate on resize (debounced)
+  let t = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(t);
+    t = setTimeout(() => {
+      initRain();
+    }, 200);
+  });
+}

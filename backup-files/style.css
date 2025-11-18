@@ -1,0 +1,22 @@
+/* Override navbar styles */
+.navbar {
+    background: rgba(0, 0, 51, 0.95) !important; /* Dark blue with transparency */
+}
+
+body.light .navbar {
+    background: rgba(0, 0, 51, 0.95) !important; /* Keep dark blue even in light mode */
+}
+
+/* Keep nav links white in both modes */
+.nav-link {
+    color: var(--text-dark) !important; /* Always white */
+}
+
+body.light .nav-link {
+    color: var(--text-dark) !important; /* Always white */
+}
+
+/* Maintain hover effects */
+.nav-link:hover {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
