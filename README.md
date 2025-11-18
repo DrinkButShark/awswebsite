@@ -1,2 +1,0 @@
-# awswebsite
-youtube and pdf

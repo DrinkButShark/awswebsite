@@ -341,272 +341,33 @@ if(searchInput){
 }
 
 
-// === Three.js Nano-Spot Circle Background ===
-let scene, camera, renderer, nanoSpots = [], mouse = { x: 0, y: 0 }, windowHalf = { x: 0, y: 0 };
-let animationId;
-let isMobile = window.innerWidth <= 768;
-
-function initThreeJS() {
-  const container = document.getElementById('three-bg');
-  
-  // Scene setup
-  scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x050505, isMobile ? 0.004 : 0.002);
-  
-  // Camera setup
-  camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 2000);
-  camera.position.z = isMobile ? 500 : 1000;
-  
-  // Renderer setup with performance optimizations
-  renderer = new THREE.WebGLRenderer({
-    antialias: !isMobile,
-    alpha: true,
-    powerPreference: "high-performance"
-  });
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(isMobile ? 1 : window.devicePixelRatio);
-  renderer.setClearColor(0x000000, 1);
-  container.appendChild(renderer.domElement);
-  
-  // Create dark background
-  const geometry = new THREE.PlaneGeometry(window.innerWidth, window.innerHeight);
-  const material = new THREE.MeshBasicMaterial({ color: 0x050505 });
-  const background = new THREE.Mesh(geometry, material);
-  background.position.z = -1500;
-  scene.add(background);
-  
-  // Create nano-spots as small circular lights with glow
-  const spotCount = isMobile ? 30 : 60;
-  const colors = [0xff0000, 0x0000ff]; // Red and blue - evenly distributed
-  
-  // Create shader material for glow effect
-  const glowShader = {
-    uniforms: {
-      "c": { type: "f", value: 0.7 },
-      "p": { type: "f", value: 4.5 }
-    },
-    vertexShader: `
-      uniform float c;
-      uniform float p;
-      varying vec3 vNormal;
-      void main() {
-        vNormal = normalize(normalMatrix * normal);
-        vec3 pos = position;
-        pos = pos + normal * (sin(position.x * 10.0) * 0.1);
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-      }
-    `,
-    fragmentShader: `
-      uniform float c;
-      uniform float p;
-      varying vec3 vNormal;
-      void main() {
-        float intensity = pow(c - dot(vNormal, vec3(0, 0, 1.0)), p);
-        gl_FragColor = vec4(0.0, 0.0, 0.0, intensity);
-      }
-    `,
-    side: THREE.FrontSide,
-    blending: THREE.AdditiveBlending,
-    transparent: true
-  };
-  
-  for (let i = 0; i < spotCount; i++) {
-    // Create main spot (small sphere)
-    const spotGeometry = new THREE.SphereGeometry(isMobile ? 3 : 5, 16, 16);
-    const spotColor = colors[i % 2]; // Alternate between red and blue
-    const spotMaterial = new THREE.MeshBasicMaterial({
-      color: spotColor,
-      transparent: true,
-      opacity: isMobile ? 0.8 : 0.9
-    });
-    
-    const spot = new THREE.Mesh(spotGeometry, spotMaterial);
-    
-    // Random position
-    spot.position.x = (Math.random() - 0.5) * (isMobile ? 1000 : 1800);
-    spot.position.y = (Math.random() - 0.5) * (isMobile ? 1000 : 1800);
-    spot.position.z = (Math.random() - 0.5) * (isMobile ? 500 : 1000);
-    
-    // Create glow effect
-    const glowMaterial = new THREE.ShaderMaterial({
-      uniforms: THREE.UniformsUtils.clone(glowShader.uniforms),
-      vertexShader: glowShader.vertexShader,
-      fragmentShader: glowShader.fragmentShader,
-      side: THREE.BackSide,
-      blending: THREE.AdditiveBlending,
-      transparent: true
-    });
-    
-    glowMaterial.uniforms["c"].value = isMobile ? 0.6 : 0.8;
-    glowMaterial.uniforms["p"].value = isMobile ? 3.5 : 4.5;
-    
-    const glow = new THREE.Mesh(spotGeometry, glowMaterial);
-    glow.scale.multiplyScalar(isMobile ? 2.5 : 3.5);
-    
-    // Movement properties
-    spot.velocity = {
-      x: (Math.random() - 0.5) * (isMobile ? 0.4 : 0.6),
-      y: (Math.random() - 0.5) * (isMobile ? 0.4 : 0.6),
-      z: (Math.random() - 0.5) * (isMobile ? 0.2 : 0.3)
-    };
-    
-    // Floating motion properties
-    spot.floatOffset = {
-      x: Math.random() * Math.PI * 2,
-      y: Math.random() * Math.PI * 2,
-      z: Math.random() * Math.PI * 2
-    };
-    
-    spot.floatSpeed = {
-      x: Math.random() * 0.001 + 0.0005,
-      y: Math.random() * 0.001 + 0.0005,
-      z: Math.random() * 0.001 + 0.0005
-    };
-    
-    // Pulse properties
-    spot.pulseSpeed = Math.random() * 0.01 + 0.005;
-    spot.baseOpacity = isMobile ? 0.8 : 0.9;
-    spot.pulseOffset = Math.random() * Math.PI * 2;
-    
-    // Add both spot and glow to scene
-    scene.add(spot);
-    scene.add(glow);
-    
-    // Store reference to glow
-    spot.glow = glow;
-    
-    nanoSpots.push(spot);
-  }
-  
-  // Add subtle ambient light
-  const ambientLight = new THREE.AmbientLight(0x101010, isMobile ? 0.1 : 0.15);
-  scene.add(ambientLight);
-  
-  // Store window half dimensions
-  windowHalf.x = window.innerWidth / 2;
-  windowHalf.y = window.innerHeight / 2;
-  
-  // Event listeners
-  document.addEventListener('mousemove', onMouseMove, false);
-  window.addEventListener('resize', onWindowResize, false);
-}
-
-function onMouseMove(event) {
-  // Track mouse for interaction
-  if (!isMobile) {
-    mouse.x = (event.clientX - windowHalf.x) / 100;
-    mouse.y = (event.clientY - windowHalf.y) / 100;
-  }
-}
-
-function onWindowResize() {
-  isMobile = window.innerWidth <= 768;
-  
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  
-  // Update camera position based on device
-  camera.position.z = isMobile ? 500 : 1000;
-  
-  // Update background plane
-  const background = scene.children.find(child => child.geometry instanceof THREE.PlaneGeometry);
-  if (background) {
-    background.geometry.dispose();
-    background.geometry = new THREE.PlaneGeometry(window.innerWidth, window.innerHeight);
-  }
-}
-
-function animate() {
-  animationId = requestAnimationFrame(animate);
-  const time = Date.now() * 0.001;
-  
-  // Move and animate nano-spots
-  nanoSpots.forEach((spot, index) => {
-    // Floating motion using sine waves for smooth movement
-    spot.position.x += spot.velocity.x + Math.sin(time * spot.floatSpeed.x + spot.floatOffset.x) * 0.1;
-    spot.position.y += spot.velocity.y + Math.cos(time * spot.floatSpeed.y + spot.floatOffset.y) * 0.1;
-    spot.position.z += spot.velocity.z + Math.sin(time * spot.floatSpeed.z + spot.floatOffset.z) * 0.05;
-    
-    // Update glow position to match spot
-    if (spot.glow) {
-      spot.glow.position.copy(spot.position);
-    }
-    
-    // Pulse effect for opacity
-    const pulse = Math.sin(time * spot.pulseSpeed + spot.pulseOffset);
-    spot.material.opacity = spot.baseOpacity + pulse * 0.2;
-    
-    // Subtle scaling effect
-    const scale = 1 + pulse * 0.1;
-    spot.scale.set(scale, scale, scale);
-    if (spot.glow) {
-      spot.glow.scale.set(scale * (isMobile ? 2.5 : 3.5), scale * (isMobile ? 2.5 : 3.5), scale * (isMobile ? 2.5 : 3.5));
-    }
-    
-    // Mouse interaction for desktop - subtle attraction
-    if (!isMobile) {
-      const dx = mouse.x - spot.position.x * 0.02;
-      const dy = mouse.y - spot.position.y * 0.02;
-      spot.position.x += dx * 0.01;
-      spot.position.y += dy * 0.01;
-    }
-    
-    // Boundary check - wrap around screen
-    const boundary = isMobile ? 500 : 1000;
-    if (spot.position.x > boundary) spot.position.x = -boundary;
-    if (spot.position.x < -boundary) spot.position.x = boundary;
-    if (spot.position.y > boundary) spot.position.y = -boundary;
-    if (spot.position.y < -boundary) spot.position.y = boundary;
-    if (spot.position.z > boundary) spot.position.z = -boundary;
-    if (spot.position.z < -boundary) spot.position.z = boundary;
-  });
-  
-  // Subtle camera movement based on mouse (only on desktop)
-  if (!isMobile) {
-    camera.position.x += (mouse.x - camera.position.x) * 0.02;
-    camera.position.y += (-mouse.y - camera.position.y) * 0.02;
-    camera.lookAt(scene.position);
-  }
-  
-  renderer.render(scene, camera);
-}
-
-// Initialize Three.js when DOM is loaded
-function startAnimation() {
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      initThreeJS();
-      animate();
-    });
-  } else {
-    initThreeJS();
-    animate();
-  }
-}
-
-// Start animation
-startAnimation();
-
-// Handle visibility change for performance
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden) {
-    // Pause animation when tab is not visible
-    if (animationId) {
-      cancelAnimationFrame(animationId);
-    }
-  } else {
-    // Resume animation when tab becomes visible
-    animate();
-  }
+// === Initialize Vanta.js Waves ===
+VANTA.WAVES({
+  el: "#animated-bg",
+  mouseControls: true,
+  touchControls: true,
+  minHeight: 200.00,
+  minWidth: 200.00,
+  scale: 1.0,
+  scaleMobile: 1.0,
+  color: 0x6f42c1,
+  shininess: 50.00,
+  waveHeight: 20.00,
+  waveSpeed: 0.5,
+  zoom: 0.9
 });
 
-// Cleanup on page unload
-window.addEventListener('beforeunload', () => {
-  if (animationId) {
-    cancelAnimationFrame(animationId);
-  }
-  if (renderer) {
-    renderer.dispose();
+// === Initialize Particles.js Floating Dots ===
+tsParticles.load("particles-js", {
+  particles: {
+    number: { value: 40 },
+    color: { value: "#6f42c1" },
+    shape: { type: "circle" },
+    opacity: { value: 0.5 },
+    size: { value: 3 },
+    move: { enable: true, speed: 1 }
+  },
+  interactivity: {
+    events: { onhover: { enable: true, mode: "repulse" } }
   }
 });
